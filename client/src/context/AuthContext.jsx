@@ -2,16 +2,12 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
-// Access environment variable for backend URL
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-// Create Auth Context
 const AuthContext = createContext();
 
-// Custom hook to use Auth Context
 export const useAuth = () => useContext(AuthContext);
 
-// Auth Provider
 export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(() => localStorage.getItem("token") || null);
   const [user, setUser] = useState(() => {
@@ -25,7 +21,6 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  // Handle login
   const login = async (email, password) => {
     try {
       const res = await fetch(`${backendURL}/api/login`, {
@@ -55,7 +50,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Handle logout
   const logout = () => {
     localStorage.removeItem("token");
     setUserToken(null);
@@ -63,7 +57,6 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
-  // Watch for token changes or expiry
   useEffect(() => {
     if (userToken) {
       try {
