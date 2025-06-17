@@ -7,6 +7,8 @@ const cors = require('cors')
 app.use(express.json())
 app.use(cors())
 
+app.use('/api', require('./routes/createUser'))
+
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('Error connecting to MongoDB:', error))
