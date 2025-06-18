@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => {
 
       if (data.token) {
         localStorage.setItem("token", data.token);
+        console.log(data.token);
         setUserToken(data.token);
         setUser(jwtDecode(data.token));
         return true;

@@ -1,28 +1,34 @@
-const mongoose = require('mongoose')
-import { nanoid } from 'nanoid'
+const mongoose = require('mongoose');
+const { nanoid } = require('nanoid');
 
-const Post = mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    body: {
-        type: String,
-        required: true
-    },
-    slug: {
-        type: String,
-        unique: true,
-        default: () => nanoid(6)
-    },
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now
-    }
-})
+const postSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Post title is required'],
+    trim: true,
+  },
+  body: {
+    type: String,
+    required: [true, 'Post body is required'],
+  },
+  slug: {
+    type: String,
+    unique: true,
+    default: () => nanoid(6), 
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, 
+  },
+  thumbnail: {
+    type: String,
+    default: "", 
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-module.exports = mongoose.model('Post', Post)
+module.exports = mongoose.model('Post', postSchema);

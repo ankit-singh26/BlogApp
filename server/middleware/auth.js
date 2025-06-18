@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
         return res.status(401).json({message: "Token not found"})
     }
     try {
-        const decoded = jwt.verify(token, process.env.JET_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
         req.user = { id: decoded.id }
         next()
     }catch(err){
