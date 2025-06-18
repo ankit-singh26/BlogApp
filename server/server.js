@@ -9,6 +9,7 @@ app.use(cors())
 
 app.use('/api', require('./routes/createUser'))
 app.use('/api/posts', require('./routes/postRoutes'))
+app.use("/api/comments", require("./routes/commentRoutes"));
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))

@@ -20,19 +20,31 @@ router.post("/create", auth, upload.single("thumbnail"), async (req, res) => {
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (err) {
-    res.status(500).json({ message: "Error creating post" });
+    res.status(500).json({ message: err.message });
   }
 });
 
 
 router.get('/all', async (req, res) => {
-    try {
-        const post = await Post.find().populate('author', 'name email')
-        return res.status(200).json(post)
-    }  catch (err) {
-        return res.status(500).json({message: err.message})
-    }
-})
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const posts = await Post.find()
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('author', 'name email');
+
+    const total = await Post.countDocuments();
+
+    res.status(200).json({ posts, total });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 router.get('/:slug', async (req, res) => {
     try {
