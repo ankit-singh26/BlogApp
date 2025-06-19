@@ -3,7 +3,6 @@ const router = express.Router();
 const Comment = require("../models/Comments");
 const auth = require("../middleware/auth");
 
-// Add comment
 router.post("/:postId", auth, async (req, res) => {
   const { text, parent } = req.body;
   try {
@@ -15,13 +14,13 @@ router.post("/:postId", auth, async (req, res) => {
     });
 
     const saved = await newComment.save();
-    res.status(201).json(saved);
+    const populated = await saved.populate("user", "name email");
+    res.status(201).json(populated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get comments for a post
 router.get("/:postId", async (req, res) => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
@@ -34,7 +33,6 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
-// Delete comment
 router.delete("/:id", auth, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);

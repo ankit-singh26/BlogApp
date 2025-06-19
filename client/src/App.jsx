@@ -6,6 +6,7 @@ import CreatePost from "./pages/CreatePost"
 import SinglePost from "./pages/SinglePost"
 import EditPost from "./pages/EditPost"
 import Profile from "./pages/Profile"
+import AuthorProfile from "./pages/authorProfile"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/post/:slug" element={<SinglePost/>}></Route>
         <Route path="/edit/:slug" element={<EditPost />}></Route>
         <Route path="/profile" element={<Profile/>}></Route>
+        <Route path="/profile/:userId" element={<AuthorProfile/>}></Route>
       </Routes>
     </>
   )

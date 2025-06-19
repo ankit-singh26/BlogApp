@@ -69,7 +69,7 @@ const CreatePost = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100  dark:bg-gray-900 dark:text-white py-8">
+      <div className="min-h-screen bg-gray-100  dark:bg-gray-900 dark:text-black py-8">
         <div
           className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md"
           data-color-mode="light"
@@ -83,7 +83,7 @@ const CreatePost = () => {
               placeholder="Post Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+              className="w-full p-3 border dark:text-black border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
             />
 
             <input

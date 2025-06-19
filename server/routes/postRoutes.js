@@ -142,7 +142,8 @@ router.get("/tags/all", async (req, res) => {
 // routes/postRoutes.js
 router.get("/user/:id", async (req, res) => {
   try {
-    const posts = await Post.find({ author: req.params.id }).sort({ timestamp: -1 });
+    const posts = await Post.find({ author: req.params.id }).sort({ timestamp: -1 })
+                            .populate('author', 'name');
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch user posts" });

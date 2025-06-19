@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Comment from "../components/Comment";
 import Navbar from "../components/NavBar";
@@ -98,9 +98,17 @@ const SinglePost = () => {
             className="w-full h-64 object-cover rounded-lg mb-6"
           />
         )}
+        
         <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
         <p className="text-sm text-gray-500 mb-4">
-          By {post.author.name} • {formattedDate}
+          By{" "}
+          <Link
+            to={`/profile/${post.author._id}`}
+            className="text-blue-500 hover:underline"
+          >
+            {post.author.name}
+          </Link>{" "}
+          • {formattedDate}
         </p>
 
         {/* Like Button */}
@@ -113,7 +121,9 @@ const SinglePost = () => {
           >
             {liked ? "❤️" : "🤍"}
           </button>
-          <span className="text-sm text-gray-600">{likesCount} like{likesCount !== 1 && "s"}</span>
+          <span className="text-sm text-gray-600">
+            {likesCount} like{likesCount !== 1 && "s"}
+          </span>
         </div>
 
         <div
@@ -122,7 +132,7 @@ const SinglePost = () => {
         />
 
         {/* Edit/Delete Buttons */}
-        {user?.id === post.author._id && (
+        {(user?.id === post.author._id || user?.isAdmin) && (
           <div className="flex gap-4 mb-4">
             <button
               className="bg-blue-500 text-white px-4 py-1 rounded"

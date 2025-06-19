@@ -118,21 +118,6 @@ const SignUp = () => {
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
               />
             </div>
-            {/* Consider if isAdmin should be a selectable option for regular users */}
-            {/* If not, remove this input or set it based on backend logic */}
-            <div className="flex items-center">
-              <input
-                id="isAdmin"
-                name="isAdmin"
-                type="checkbox"
-                checked={formData.isAdmin}
-                onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900">
-                Register as Admin (usually only for development/internal use)
-              </label>
-            </div>
             
             <div>
               <button

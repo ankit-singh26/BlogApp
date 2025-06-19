@@ -62,7 +62,7 @@ const Comments = ({ postId }) => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          
+
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 mt-2 rounded"
@@ -76,10 +76,11 @@ const Comments = ({ postId }) => {
         {comments.map((c) => (
           <div key={c._id} className="p-4 bg-gray-100 rounded shadow-sm">
             <div className="text-sm text-gray-700 mb-1">
-              <strong>{c.user.name}</strong> – {new Date(c.createdAt).toLocaleString()}
+              <strong>{c.user?.name || "Unknown User"}</strong> –{" "}
+              {new Date(c.createdAt).toLocaleString()}
             </div>
             <div>{c.text}</div>
-            {user?.id === c.user._id && (
+            {user?.id === c.user?._id && (
               <button
                 onClick={() => handleDelete(c._id)}
                 className="text-sm text-red-500 mt-2"
