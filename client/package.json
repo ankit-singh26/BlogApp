@@ -15,6 +15,7 @@
     "@uiw/react-md-editor": "^4.0.7",
     "dotenv": "^16.5.0",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.518.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-infinite-scroll-component": "^6.1.0",

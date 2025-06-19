@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   });
-
   const navigate = useNavigate();
 
   const login = async (email, password) => {
@@ -38,7 +37,6 @@ export const AuthProvider = ({ children }) => {
 
       if (data.token) {
         localStorage.setItem("token", data.token);
-        console.log(data.token);
         setUserToken(data.token);
         setUser(jwtDecode(data.token));
         return true;
@@ -53,6 +51,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    console.log(user);
     setUserToken(null);
     setUser(null);
     navigate("/login");

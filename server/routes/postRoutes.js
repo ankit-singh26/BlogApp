@@ -24,27 +24,28 @@ router.post("/create", auth, upload.single("thumbnail"), async (req, res) => {
   }
 });
 
-
 router.get('/all', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
     const skip = (page - 1) * limit;
+    const tag = req.query.tag;
 
-    const posts = await Post.find()
+    const filter = tag ? { tags: tag } : {};
+
+    const posts = await Post.find(filter)
       .sort({ timestamp: -1 })
       .skip(skip)
       .limit(limit)
       .populate('author', 'name email');
 
-    const total = await Post.countDocuments();
+    const total = await Post.countDocuments(filter);
 
     res.status(200).json({ posts, total });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-
 
 router.get('/:slug', async (req, res) => {
     try {
@@ -92,5 +93,50 @@ router.delete("/:slug", auth, async (req, res) => {
     res.status(500).json({ message: "Error deleting post" });
   }
 });
+
+router.patch('/:id/like', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    const userId = req.user.id;
+
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    const alreadyLiked = post.likedBy.includes(userId);
+
+    if (alreadyLiked) {
+      post.likes -= 1;
+      post.likedBy = post.likedBy.filter(id => id.toString() !== userId);
+    } else {
+      post.likes += 1;
+      post.likedBy.push(userId);
+    }
+
+    await post.save();
+    res.status(200).json({ likes: post.likes, likedBy: post.likedBy });
+  } catch (err) {
+    res.status(500).json({ message: 'Error toggling like', error: err.message });
+  }
+});
+
+// GET /api/posts/tags/all
+router.get("/tags/all", async (req, res) => {
+  try {
+    const tags = await Post.distinct("tags");
+    res.status(200).json(tags);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching tags" });
+  }
+});
+
+// routes/postRoutes.js
+router.get("/user/:id", async (req, res) => {
+  try {
+    const posts = await Post.find({ author: req.params.id }).sort({ timestamp: -1 });
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch user posts" });
+  }
+});
+
 
 module.exports = router;
