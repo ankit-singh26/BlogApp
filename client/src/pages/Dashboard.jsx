@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -6,9 +6,20 @@ const Dashboard = () => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const limit = 6;
 
-  const fetchPosts = async () => {
+  // Reset state on mount
+  useEffect(() => {
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+  }, []);
+
+  const fetchPosts = useCallback(async () => {
+    if (isFetching || !hasMore) return;
+    setIsFetching(true);
+
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/posts/all?page=${page}&limit=${limit}`
@@ -20,12 +31,14 @@ const Dashboard = () => {
       setPage(prev => prev + 1);
     } catch (err) {
       console.error("Fetch error:", err);
+    } finally {
+      setIsFetching(false);
     }
-  };
+  }, [page, hasMore, isFetching]);
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]);
 
   return (
     <div className="max-w-6xl mx-auto p-4">

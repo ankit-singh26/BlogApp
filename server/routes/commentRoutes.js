@@ -43,7 +43,7 @@ router.delete("/:id", auth, async (req, res) => {
     if (comment.user.toString() !== req.user.id)
       return res.status(403).json({ message: "Unauthorized" });
 
-    await comment.remove();
+    await comment.deleteOne();
     res.json({ message: "Comment deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });

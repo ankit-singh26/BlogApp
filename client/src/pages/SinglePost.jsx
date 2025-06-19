@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Comments from '../components/Comments';
+import Comment from '../components/Comment';
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -87,7 +87,7 @@ const SinglePost = () => {
     </button>
     </div>
     )}
-      <Comments postId={post._id} />
+      <Comment postId={post._id} />
     </div>
   );
 };
