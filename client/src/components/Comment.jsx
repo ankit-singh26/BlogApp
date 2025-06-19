@@ -51,13 +51,13 @@ const Comments = ({ postId }) => {
   };
 
   return (
-    <div className="mt-10">
-      <h3 className="text-xl font-semibold mb-4">Comments</h3>
+    <div className="mt-10  dark:bg-gray-900 dark:text-black py-8">
+      <h3 className="text-xl font-semibold mb-4 dark:text-white">Comments</h3>
 
       {user && (
-        <form onSubmit={handleSubmit} className="mb-4">
+        <form onSubmit={handleSubmit} className="mb-4 dark:text-white">
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded dark:text-white"
             placeholder="Write a comment..."
             value={text}
             onChange={(e) => setText(e.target.value)}

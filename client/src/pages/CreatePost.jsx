@@ -24,7 +24,14 @@ const CreatePost = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("body", body);
-    formData.append("tags", tags);
+
+    // ✅ Send tags as a JSON array
+    const tagArray = tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    formData.append("tags", JSON.stringify(tagArray));
+
     formData.append("thumbnail", thumbnail);
 
     try {
@@ -33,18 +40,25 @@ const CreatePost = () => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${userToken}`,
+            Authorization: `Bearer ${userToken}`, // ✅ Pass token in headers
           },
-          body: formData,
+          body: formData, // ✅ No 'Content-Type' header when using FormData
         }
       );
 
       if (res.ok) {
-        // You might want to show a success message here before navigating
         navigate(`/`);
       } else {
-        const err = await res.json();
-        alert(err.message || "Something went wrong");
+        // Don't try to parse JSON if it's not actually JSON!
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const err = await res.json();
+          alert(err.message || "Something went wrong");
+        } else {
+          const text = await res.text(); // fallback to plain text
+          console.error("Non-JSON error:", text);
+          alert("Something went wrong on the server.");
+        }
       }
     } catch (err) {
       console.error(err);
@@ -55,16 +69,21 @@ const CreatePost = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 py-8"> {/* Added min-h-screen and background */}
-        <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md" data-color-mode="light"> {/* Increased padding, added background, rounded corners, and shadow */}
-          <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">Create New Post</h2> {/* Larger title, bolder, darker text, centered */}
-          <form onSubmit={handleSubmit} className="space-y-6"> {/* Increased vertical spacing */}
+      <div className="min-h-screen bg-gray-100  dark:bg-gray-900 dark:text-white py-8">
+        <div
+          className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md"
+          data-color-mode="light"
+        >
+          <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+            Create New Post
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <input
               type="text"
               placeholder="Post Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" // Added more padding, border color, focus styles, and transition
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
             />
 
             <input
@@ -72,19 +91,18 @@ const CreatePost = () => {
               placeholder="Tags (comma separated)"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" // Same styling as title input
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
             />
 
-            <div className="border border-gray-300 rounded-md overflow-hidden"> {/* Added border color, rounded corners, and overflow hidden */}
-              <MDEditor
-                value={body}
-                onChange={setBody}
-                height={300} // You can adjust the height as needed
-              />
+            <div className="border border-gray-300 rounded-md overflow-hidden">
+              <MDEditor value={body} onChange={setBody} height={300} />
             </div>
 
-            <div className="flex items-center space-x-4"> {/* Added flex for alignment and spacing */}
-              <label htmlFor="thumbnail-upload" className="block text-sm font-medium text-gray-700">
+            <div className="flex items-center space-x-4">
+              <label
+                htmlFor="thumbnail-upload"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Post Thumbnail:
               </label>
               <input
@@ -93,22 +111,23 @@ const CreatePost = () => {
                 accept="image/*"
                 onChange={(e) => setThumbnail(e.target.files[0])}
                 className="block w-full text-sm text-gray-500
-                           file:mr-4 file:py-2 file:px-4
-                           file:rounded-full file:border-0
-                           file:text-sm file:font-semibold
-                           file:bg-blue-50 file:text-blue-700
-                           hover:file:bg-blue-100 cursor-pointer" // Styled the file input button
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-blue-50 file:text-blue-700
+                  hover:file:bg-blue-100 cursor-pointer"
               />
             </div>
+
             {thumbnail && (
               <div className="mt-2 text-sm text-gray-600">
-                Selected file: **{thumbnail.name}**
+                Selected file: <strong>{thumbnail.name}</strong>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out" // Full width button, more padding, bolder text, hover and focus styles
+              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
             >
               Publish Post
             </button>

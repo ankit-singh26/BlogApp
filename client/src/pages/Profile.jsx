@@ -9,7 +9,7 @@ const Profile = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  console.log(user.description)
   const fetchUserPosts = async () => {
     try {
       const res = await fetch(`${backendURL}/api/posts/user/${user.id}`);
@@ -29,7 +29,7 @@ const Profile = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 flex justify-center items-center py-10">
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center py-0  dark:bg-gray-900 dark:text-white">
         <div className="w-full max-w-5xl bg-white rounded-3xl shadow-xl p-8">
           {/* Top Profile Section */}
           <div className="flex flex-col items-center text-center mb-10">

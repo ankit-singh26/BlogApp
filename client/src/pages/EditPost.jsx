@@ -73,7 +73,7 @@ const EditPost = () => {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100  dark:bg-gray-900 dark:text-white">
           <p className="text-xl text-gray-700">Loading post data...</p>
         </div>
       </>
@@ -84,7 +84,7 @@ const EditPost = () => {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4  dark:bg-gray-900 dark:text-white">
           <p className="text-xl text-red-600 mb-4">{error}</p>
           <button
             onClick={() => navigate("/")}
@@ -100,7 +100,7 @@ const EditPost = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 py-8">
+      <div className="min-h-screen bg-gray-100 py-0">
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md" data-color-mode="light">
           <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
             Edit Your Post

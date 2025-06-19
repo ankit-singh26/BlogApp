@@ -5,22 +5,33 @@ const router = express.Router()
 const upload = require("../middleware/cloudinary.js");
 
 router.post("/create", auth, upload.single("thumbnail"), async (req, res) => {
-  const { title, body, tags } = req.body;
-  const thumbnail = req.file ? req.file.path : "";
-
   try {
+    const { title, body } = req.body;
+
+    // ✅ Safe parsing of tags
+    let tags = [];
+    try {
+      tags = JSON.parse(req.body.tags);
+      if (!Array.isArray(tags)) throw new Error("Tags must be an array");
+    } catch (err) {
+      return res.status(400).json({ message: "Invalid tags format" });
+    }
+
+    const thumbnail = req.file ? req.file.path : "";
+
     const newPost = new Post({
       title,
       body,
-      tags,
-      thumbnail,
       author: req.user.id,
+      thumbnail,
+      tags,
     });
 
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("POST CREATE ERROR:", err); // ✅ Debug log
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 });
 

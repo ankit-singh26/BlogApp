@@ -6,8 +6,8 @@ import CreatePost from "./pages/CreatePost"
 import SinglePost from "./pages/SinglePost"
 import EditPost from "./pages/EditPost"
 import Profile from "./pages/Profile"
-function App() {
 
+function App() {
   return (
     <>
       <Routes>

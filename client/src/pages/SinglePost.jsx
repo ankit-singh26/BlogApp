@@ -90,7 +90,7 @@ const SinglePost = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="max-w-3xl mx-auto px-4 py-10 dark:bg-gray-900 dark:text-white">
         {post.thumbnail && (
           <img
             src={post.thumbnail}
