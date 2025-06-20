@@ -12,6 +12,28 @@ dist
 dist-ssr
 *.local
 
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE config
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
