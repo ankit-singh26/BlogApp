@@ -85,7 +85,7 @@ const AuthorProfile = () => {
     <>
       <Navbar />
       <div className="min-h-screen bg-gray-100 flex justify-center items-center py-0 dark:bg-gray-900 dark:text-white">
-        <div className="w-full max-w-5xl bg-white rounded-3xl shadow-xl p-8">
+        <div className="w-full max-w-5xl bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8">
           {/* Top Profile Section */}
           <div className="flex flex-col items-center text-center mb-10">
             <img
@@ -122,7 +122,7 @@ const AuthorProfile = () => {
                   <Link
                     to={`/post/${post.slug}`}
                     key={post._id}
-                    className="bg-white rounded-xl overflow-hidden shadow hover:shadow-md transition"
+                    className="bg-white dark:bg-gray-700 rounded-xl overflow-hidden shadow hover:shadow-md transition"
                   >
                     {post.thumbnail && (
                       <img

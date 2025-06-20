@@ -65,10 +65,11 @@ const Profile = () => {
             >
               ×
             </button>
-            <h3 className="text-xl font-semibold mb-4 dark:text-white mt-6">
+            <h3 className="text-xl font-semibold mb-2 dark:text-white mt-6">
               {sidebarType === "followers" ? "Followers" : "Following"}
             </h3>
-            <ul className="space-y-2 text-sm">
+            <hr />
+            <ul className="space-y-2 text-sm py-2">
               {currentList.length === 0 ? (
                 <p className="text-gray-500">No {sidebarType} yet.</p>
               ) : (
