@@ -10,8 +10,9 @@ const AuthorProfile = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
 
-  // Fetch user profile and posts
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -29,10 +30,9 @@ const AuthorProfile = () => {
     fetchProfile();
   }, [userId]);
 
-  // Check follow status after userData is available
   useEffect(() => {
     const checkFollowing = async () => {
-      if (!userData?._id) return;
+      if (!userData?._id || !localStorage.getItem("token")) return;
       try {
         const res = await fetch(
           `${backendURL}/api/users/${userData._id}/is-following`,
@@ -49,14 +49,29 @@ const AuthorProfile = () => {
       }
     };
 
-    checkFollowing();
+    const fetchFollowData = async () => {
+      if (!userData?._id) return;
+      try {
+        const res = await fetch(
+          `${backendURL}/api/users/${userData._id}/follow-data`
+        );
+        const data = await res.json();
+        setFollowers(data.followers || []);
+        setFollowing(data.following || []);
+      } catch (err) {
+        console.error("Error fetching follow data:", err);
+      }
+    };
+
+    if (userData?._id) {
+      checkFollowing();
+      fetchFollowData();
+    }
   }, [userData]);
 
-  // Follow / Unfollow button action
   const handleFollowToggle = async () => {
     try {
       const method = isFollowing ? "DELETE" : "POST";
-
       const res = await fetch(
         `${backendURL}/api/users/${userData._id}/${isFollowing ? "unfollow" : "follow"}`,
         {
@@ -69,6 +84,14 @@ const AuthorProfile = () => {
 
       if (res.ok) {
         setIsFollowing(!isFollowing);
+
+        // Refresh follow data
+        const refetchRes = await fetch(
+          `${backendURL}/api/users/${userData._id}/follow-data`
+        );
+        const updated = await refetchRes.json();
+        setFollowers(updated.followers || []);
+        setFollowing(updated.following || []);
       } else {
         console.error("Failed to follow/unfollow");
       }
@@ -86,7 +109,7 @@ const AuthorProfile = () => {
       <Navbar />
       <div className="min-h-screen bg-gray-100 flex justify-center items-center py-0 dark:bg-gray-900 dark:text-white">
         <div className="w-full max-w-5xl bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8">
-          {/* Top Profile Section */}
+          {/* Profile Info */}
           <div className="flex flex-col items-center text-center mb-10">
             <img
               src={`https://ui-avatars.com/api/?name=${userData.name}&background=random`}
@@ -100,20 +123,33 @@ const AuthorProfile = () => {
             <p className="text-sm text-gray-400 mt-1">
               {userData.description || "Blogger & Explorer"}
             </p>
-            <button
-              onClick={handleFollowToggle}
-              className={`mt-3 px-4 py-1 text-sm rounded-full ${
-                isFollowing ? "bg-gray-500" : "bg-black"
-              } text-white`}
-            >
-              {isFollowing ? "Unfollow" : "Follow"}
-            </button>
+            {localStorage.getItem("token") && (
+              <button
+                onClick={handleFollowToggle}
+                className={`mt-3 px-4 py-1 text-sm rounded-full ${
+                  isFollowing ? "bg-gray-500" : "bg-black"
+                } text-white`}
+              >
+                {isFollowing ? "Unfollow" : "Follow"}
+              </button>
+            )}
           </div>
 
-          {/* Post Gallery Section */}
-          <div>
-            <h3 className="text-xl font-semibold mb-6">Blog Posts</h3>
+          {/* Followers / Following */}
+          <div className="flex gap-8 justify-center mt-4 text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-center">
+              <p className="text-lg font-semibold">{followers.length}</p>
+              <p>Followers</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-semibold">{following.length}</p>
+              <p>Following</p>
+            </div>
+          </div>
 
+          {/* Posts */}
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold mb-6">Blog Posts</h3>
             {posts.length === 0 ? (
               <p className="text-gray-500">This user hasn't written any posts yet.</p>
             ) : (
@@ -132,7 +168,9 @@ const AuthorProfile = () => {
                       />
                     )}
                     <div className="p-4">
-                      <h4 className="font-semibold text-lg truncate">{post.title}</h4>
+                      <h4 className="font-semibold text-lg truncate">
+                        {post.title}
+                      </h4>
                       <p className="text-sm text-gray-500 truncate">
                         {new Date(post.timestamp).toLocaleDateString("en-IN", {
                           year: "numeric",

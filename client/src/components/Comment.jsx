@@ -20,6 +20,10 @@ const Comments = ({ postId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+      alert("Please log in or sign up to post a comment.");
+      return;
+    }
     if (!text.trim()) return;
 
     const res = await fetch(`${backend}/api/comments/${postId}`, {
@@ -51,26 +55,35 @@ const Comments = ({ postId }) => {
   };
 
   return (
-    <div className="mt-10  dark:bg-gray-900 dark:text-black py-8">
+    <div className="mt-10 dark:bg-gray-900 dark:text-black py-8">
       <h3 className="text-xl font-semibold mb-4 dark:text-white">Comments</h3>
 
-      {user && (
-        <form onSubmit={handleSubmit} className="mb-4 dark:text-white">
-          <textarea
-            className="w-full p-2 border rounded dark:text-white"
-            placeholder="Write a comment..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
+      <form onSubmit={handleSubmit} className="mb-4 dark:text-white">
+        <textarea
+          className="w-full p-2 border rounded dark:text-white"
+          placeholder={
+            user ? "Write a comment..." : "Login or Sign up to comment"
+          }
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onFocus={() => {
+            if (!user) {
+              alert("Please log in or sign up to post a comment.");
+            }
+          }}
+          readOnly={!user}
+        />
 
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 mt-2 rounded"
-          >
-            Submit
-          </button>
-        </form>
-      )}
+        <button
+          type="submit"
+          className={`px-4 py-2 mt-2 rounded text-white ${
+            user ? "bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+          }`}
+          disabled={!user}
+        >
+          Submit
+        </button>
+      </form>
 
       <div className="space-y-4">
         {comments.map((c) => (

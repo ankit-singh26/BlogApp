@@ -4,6 +4,23 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const auth = require("../middleware/auth");
 
+router.get("/:id/follow-data", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate("followers", "name _id")
+      .populate("following", "name _id");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      followers: user.followers,
+      following: user.following,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -97,23 +114,6 @@ router.get("/:userId/is-following", auth, async (req, res) => {
   } catch (err) {
     console.error("Check follow status error:", err);
     res.status(500).json({ message: "Server error" });
-  }
-});
-
-router.get("/:id/follow-data", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id)
-      .populate("followers", "name _id")
-      .populate("following", "name _id");
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    res.json({
-      followers: user.followers,
-      following: user.following,
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
 });
 
