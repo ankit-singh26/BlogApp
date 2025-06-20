@@ -66,11 +66,6 @@ const Comments = ({ postId }) => {
           }
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onFocus={() => {
-            if (!user) {
-              alert("Please log in or sign up to post a comment.");
-            }
-          }}
           readOnly={!user}
         />
 
